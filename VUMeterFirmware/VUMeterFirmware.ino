@@ -128,7 +128,7 @@ void loop(){
       else{
         n=8;                             //8 LEDs.
       }
-      data[i] = 0xFF >> 8 - n;
+      data[i] = 0xFF >> (8 - n);
     }
   }
 }
