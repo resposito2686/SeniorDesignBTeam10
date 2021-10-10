@@ -11,14 +11,13 @@
  *     This program will read from the Arduino Due's ADC, convert those values to
  *     a decible scale, and then big bang the results to shift registers.
  * 
- * LAST MODIFIED : 06/27/2021
+ * LAST MODIFIED : 10/10/2021
  * 
  */
 
 volatile int clockCount = 17;
 volatile int dataCount = 7;
-double a[8];
-double dbVal[8];
+int a[8];
 uint8_t n = 0;
 uint8_t data[8] = {0,0,0,0,0,0,0,0};
 uint8_t temp[8];
@@ -73,7 +72,7 @@ void setup(){
   /**************** TIMER AND INTERRUPT SETTINGS ****************/
   PMC->PMC_PCR = PMC_PCR_EN | PMC_PCR_CMD | (ID_TC0 & 0x7F);
   TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK4;
-  TC0->TC_CHANNEL[0].TC_RC = 219;
+  TC0->TC_CHANNEL[0].TC_RC = 268;
   TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
   NVIC_EnableIRQ(TC0_IRQn);
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
@@ -99,36 +98,34 @@ void loop(){
     a[7]=ADC->ADC_CDR[0];   // a[7] (analog pin 7) = entire frequency filter.
 
     for(int i = 0; i < 8; i++){
-      dbVal[i] = 20*log10(a[i]/1023);    //Calculates the dB value of the ADC reading.
-
-      if(dbVal[i] < -20.46207799){
+      if(a[i] < 97) {
         n=0;                             //0 LEDs.
       }
-      else if(dbVal[i] < -17.46310133){
+      else if(a[i] < 137){
         n=1;                             //1 LEDs.
       }
-      else if(dbVal[i] < -14.48636649){
+      else if(a[i] < 193){
         n=2;                             //2 LEDs.
       }
-      else if(dbVal[i] < -11.47425973){
+      else if(a[i] < 273){
         n=3;                             //3 LEDs.
       }
-      else if(dbVal[i] < -8.488298084){
+      else if(a[i] < 385){
         n=4;                             //4 LEDs.
       }
-      else if(dbVal[i] < -5.48553468){
+      else if(a[i] < 544){
         n=5;                             //5 LEDs.
       }
-      else if(dbVal[i] < -2.490288274){
+      else if(a[i] < 768){
         n=6;                             //6 LEDs.
       }
-      else if(dbVal[i] < -0.4979701459){
+      else if(a[i] < 966){
         n=7;                             //7 LEDs.
       }
       else{
         n=8;                             //8 LEDs.
       }
-      data[i] = 0xFF >> (8 - n);
+      data[i] = 0xFF >> 8 - n;
     }
   }
 }
