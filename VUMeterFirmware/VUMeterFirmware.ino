@@ -71,8 +71,8 @@ void setup(){
 
   /**************** TIMER AND INTERRUPT SETTINGS ****************/
   PMC->PMC_PCR = PMC_PCR_EN | PMC_PCR_CMD | (ID_TC0 & 0x7F);
-  TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK4;
-  TC0->TC_CHANNEL[0].TC_RC = 268;
+  TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK2;
+  TC0->TC_CHANNEL[0].TC_RC = 27;
   TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
   NVIC_EnableIRQ(TC0_IRQn);
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
@@ -96,7 +96,7 @@ void loop(){
     a[5]=ADC->ADC_CDR[2];   // a[5] (analog pin 5) = presence filter.
     a[6]=ADC->ADC_CDR[1];   // a[6] (analog pin 6) = brilliance filter.
     a[7]=ADC->ADC_CDR[0];   // a[7] (analog pin 7) = entire frequency filter.
-
+    
     for(int i = 0; i < 8; i++){
       if(a[i] < 97) {
         n=0;                             //0 LEDs.
