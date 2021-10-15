@@ -98,28 +98,28 @@ void loop(){
     a[7]=ADC->ADC_CDR[0];   // a[7] (analog pin 7) = entire frequency filter.
     
     for(int i = 0; i < 8; i++){
-      if(a[i] < 97) {
+      if(a[i] < 77) {
         n=0;                             //0 LEDs.
       }
-      else if(a[i] < 137){
+      else if(a[i] < 109){
         n=1;                             //1 LEDs.
       }
-      else if(a[i] < 193){
+      else if(a[i] < 154){
         n=2;                             //2 LEDs.
       }
-      else if(a[i] < 273){
+      else if(a[i] < 217){
         n=3;                             //3 LEDs.
       }
-      else if(a[i] < 385){
+      else if(a[i] < 306){
         n=4;                             //4 LEDs.
       }
-      else if(a[i] < 544){
+      else if(a[i] < 432){
         n=5;                             //5 LEDs.
       }
-      else if(a[i] < 768){
+      else if(a[i] < 610){
         n=6;                             //6 LEDs.
       }
-      else if(a[i] < 966){
+      else if(a[i] < 861){
         n=7;                             //7 LEDs.
       }
       else{
