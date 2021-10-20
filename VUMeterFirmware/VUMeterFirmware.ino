@@ -8,10 +8,10 @@
  * TEAM     : Team 10 - VU Meter
  * 
  * DESCRIPTION :
- *     This program will read from the Arduino Due's ADC, convert those values to
- *     a decible scale, and then big bang the results to shift registers.
+ *     This program will read from the Arduino Due's ADC and then 
+ *     bit bang the results to shift registers.
  * 
- * LAST MODIFIED : 10/10/2021
+ * LAST MODIFIED : 10/15/2021
  * 
  */
 
@@ -71,8 +71,8 @@ void setup(){
 
   /**************** TIMER AND INTERRUPT SETTINGS ****************/
   PMC->PMC_PCR = PMC_PCR_EN | PMC_PCR_CMD | (ID_TC0 & 0x7F);
-  TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK2;
-  TC0->TC_CHANNEL[0].TC_RC = 27;
+  TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK1;
+  TC0->TC_CHANNEL[0].TC_RC = 233;
   TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
   NVIC_EnableIRQ(TC0_IRQn);
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
@@ -85,7 +85,8 @@ void loop(){
   if (clockCount < 0){
     clockCount = 17;
   }
-  
+
+  /**************** SAMPLE ADC ****************/
   if (dataCount < 0){
     dataCount = 7;
     a[0]=ADC->ADC_CDR[7];   // a[0] (analog pin 0) = sub bass filter.
@@ -130,6 +131,7 @@ void loop(){
   }
 }
 
+/**************** INTERRUPT SERVICE ROUTINE ****************/
 void TC0_Handler(){
 
   TC0->TC_CHANNEL[0].TC_SR;
