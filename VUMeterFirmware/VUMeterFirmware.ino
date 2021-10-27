@@ -29,45 +29,45 @@ void setup(){
   ADC->ADC_CHER = ADC_CHER_CH7 | ADC_CHER_CH6 | ADC_CHER_CH5 | ADC_CHER_CH4 | ADC_CHER_CH3 | ADC_CHER_CH2 | ADC_CHER_CH1 | ADC_CHER_CH0;
 
   /**************** OUTPUT PIN SETTINGS ****************/
-  //PA15 (Pin 24) = CLOCK.
-  PIOA->PIO_OER |= PIO_OER_P15;
-  PIOA->PIO_OWER |= PIO_OWER_P15;
+  //PB21 (Pin 52) = CLOCK.
+  PIOB->PIO_OER |= PIO_OER_P21;
+  PIOB->PIO_OWER |= PIO_OWER_P21;
   
-  //PC22 (Pin 8) = LATCH.
-  PIOC->PIO_OER |= PIO_OER_P22;
-  PIOC->PIO_OWER |= PIO_OWER_P22;
+  //PC13 (Pin 50) = LATCH.
+  PIOC->PIO_OER |= PIO_OER_P13;
+  PIOC->PIO_OWER |= PIO_OWER_P13;
 
-  //PD7 (Pin 11) = Shift Register 0.
+  //PB27 (Pin 13) = Shift Register 0.
+  PIOB->PIO_OER |= PIO_OER_P27;
+  PIOB->PIO_OWER |= PIO_OWER_P27;
+
+  //PD7 (Pin 11) = Shift Register 1.
   PIOD->PIO_OER |= PIO_OER_P7;
   PIOD->PIO_OWER |= PIO_OWER_P7;
 
-  //PD8 (Pin 12) = Shift Register 1.
-  PIOD->PIO_OER |= PIO_OER_P8;
-  PIOD->PIO_OWER |= PIO_OWER_P8;
-
-  //PB25 (Pin 2) = Shift Register 2.
-  PIOB->PIO_OER |= PIO_OER_P25;
-  PIOB->PIO_OWER |= PIO_OWER_P25;
+  //PC21 (Pin 9) = Shift Register 2.
+  PIOC->PIO_OER |= PIO_OER_P21;
+  PIOC->PIO_OWER |= PIO_OWER_P21;
   
-  //PC28 (Pin 3) = Shift Register 3.
-  PIOC->PIO_OER |= PIO_OER_P28;
-  PIOC->PIO_OWER |= PIO_OWER_P28;
+  //PC23 (Pin 7) = Shift Register 3.
+  PIOC->PIO_OER |= PIO_OER_P23;
+  PIOC->PIO_OWER |= PIO_OWER_P23;
   
-  //PC26 (Pin 4) = Shift Register 4.
-  PIOC->PIO_OER |= PIO_OER_P26;
-  PIOC->PIO_OWER |= PIO_OWER_P26;
-  
-  //PC25 (Pin 5) = Shift Register 5.
+  //PC25 (Pin 5) = Shift Register 4.
   PIOC->PIO_OER |= PIO_OER_P25;
   PIOC->PIO_OWER |= PIO_OWER_P25;
   
-  //PC24 (Pin 6) = Shift Register 6.
-  PIOC->PIO_OER |= PIO_OER_P24;
-  PIOC->PIO_OWER |= PIO_OWER_P24;
+  //PC28 (Pin 3) = Shift Register 5.
+  PIOC->PIO_OER |= PIO_OER_P28;
+  PIOC->PIO_OWER |= PIO_OWER_P28;
+  
+  //PA9 (Pin 1) = Shift Register 6.
+  PIOA->PIO_OER |= PIO_OER_P9;
+  PIOA->PIO_OWER |= PIO_OWER_P9;
   
   //PC23 (Pin 7) = Shift Register 7.
-  PIOC->PIO_OER |= PIO_OER_P23;
-  PIOC->PIO_OWER |= PIO_OWER_P23;
+  //PIOC->PIO_OER |= PIO_OER_P23;
+  //PIOC->PIO_OWER |= PIO_OWER_P23;
 
   /**************** TIMER AND INTERRUPT SETTINGS ****************/
   PMC->PMC_PCR = PMC_PCR_EN | PMC_PCR_CMD | (ID_TC0 & 0x7F);
@@ -78,7 +78,7 @@ void setup(){
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 
   /**************** CLOCK START ****************/
-  PIOA->PIO_ODSR |= PIO_ODSR_P15;
+  PIOB->PIO_ODSR |= PIO_ODSR_P21;
 }
 
 void loop(){
@@ -89,14 +89,21 @@ void loop(){
   /**************** SAMPLE ADC ****************/
   if (dataCount < 0){
     dataCount = 7;
-    a[0]=ADC->ADC_CDR[7];   // a[0] (analog pin 0) = sub bass filter.
-    a[1]=ADC->ADC_CDR[6];   // a[1] (analog pin 1) = bass filter.
-    a[2]=ADC->ADC_CDR[5];   // a[2] (analog pin 2) = lower midrange filter.
-    a[3]=ADC->ADC_CDR[4];   // a[3] (analog pin 3) = midrange filter.
-    a[4]=ADC->ADC_CDR[3];   // a[4] (analog pin 4) = upper midrange filter.
-    a[5]=ADC->ADC_CDR[2];   // a[5] (analog pin 5) = presence filter.
-    a[6]=ADC->ADC_CDR[1];   // a[6] (analog pin 6) = brilliance filter.
-    a[7]=ADC->ADC_CDR[0];   // a[7] (analog pin 7) = entire frequency filter.
+    a[0]=78;   // a[0] (analog pin 0) = sub bass filter.
+    a[1]=153;   // a[1] (analog pin 1) = bass filter.
+    a[2]=216;   // a[2] (analog pin 2) = lower midrange filter.
+    a[3]=305;   // a[3] (analog pin 3) = midrange filter.
+    a[4]=431;   // a[4] (analog pin 4) = upper midrange filter.
+    a[5]=609;   // a[5] (analog pin 5) = presence filter.
+    a[6]=860;   // a[6] (analog pin 6) = brilliance filter.
+    //a[0]=ADC->ADC_CDR[7];   // a[0] (analog pin 0) = sub bass filter.
+    //a[1]=ADC->ADC_CDR[6];   // a[1] (analog pin 1) = bass filter.
+    //a[2]=ADC->ADC_CDR[5];   // a[2] (analog pin 2) = lower midrange filter.
+    //a[3]=ADC->ADC_CDR[4];   // a[3] (analog pin 3) = midrange filter.
+    //a[4]=ADC->ADC_CDR[3];   // a[4] (analog pin 4) = upper midrange filter.
+    //a[5]=ADC->ADC_CDR[2];   // a[5] (analog pin 5) = presence filter.
+    //a[6]=ADC->ADC_CDR[1];   // a[6] (analog pin 6) = brilliance filter.
+    a[7]=0;                 // a[7]  NOT USED.
     
     for(int i = 0; i < 8; i++){
       if(a[i] < 77) {
@@ -135,10 +142,10 @@ void loop(){
 void TC0_Handler(){
 
   TC0->TC_CHANNEL[0].TC_SR;
-  PIOA->PIO_ODSR ^= PIO_ODSR_P15;
+  PIOB->PIO_ODSR ^= PIO_ODSR_P21;
   
   if (clockCount > 2){
-    PIOC->PIO_ODSR &= ~PIO_ODSR_P22;
+    PIOC->PIO_ODSR &= ~PIO_ODSR_P13;
     
     if ((clockCount & 0x01) != 0){
       for (int i = 0; i < 8; i++){
@@ -149,71 +156,71 @@ void TC0_Handler(){
 
       //Shift Register 0.
       if (temp[0] == 0x01){
+        PIOB->PIO_ODSR |= PIO_ODSR_P27;
+      }
+      else{
+        PIOB->PIO_ODSR &= ~PIO_ODSR_P27;
+      }
+      
+      //Shift Register 1.
+      if (temp[1] == 0x01){
         PIOD->PIO_ODSR |= PIO_ODSR_P7;
       }
       else{
         PIOD->PIO_ODSR &= ~PIO_ODSR_P7;
       }
-      
-      //Shift Register 1.
-      if (temp[1] == 0x01){
-        PIOD->PIO_ODSR |= PIO_ODSR_P8;
-      }
-      else{
-        PIOD->PIO_ODSR &= ~PIO_ODSR_P8;
-      }
 
       //Shift Register 2.
       if (temp[2] == 0x01){
-        PIOB->PIO_ODSR |= PIO_ODSR_P25;
+        PIOC->PIO_ODSR |= PIO_ODSR_P21;
       }
       else{
-        PIOB->PIO_ODSR &= ~PIO_ODSR_P25;
+        PIOC->PIO_ODSR &= ~PIO_ODSR_P21;
       }
 
       //Shift Register 3.
       if (temp[3] == 0x01){
-        PIOC->PIO_ODSR |= PIO_ODSR_P28;
-      }
-      else{
-        PIOC->PIO_ODSR &= ~PIO_ODSR_P28;
-      }
-
-      //Shift Register 4.
-      if (temp[4] == 0x01){
-        PIOC->PIO_ODSR |= PIO_ODSR_P26;
-      }
-      else{
-        PIOC->PIO_ODSR &= ~PIO_ODSR_P26;
-      }   
-
-      //Shift Register 5.
-      if (temp[5] == 0x01){
-        PIOC->PIO_ODSR |= PIO_ODSR_P25;
-      }
-      else{
-        PIOC->PIO_ODSR &= ~PIO_ODSR_P25;
-      } 
-
-      //Shift Register 6.
-      if (temp[6] == 0x01){
-        PIOC->PIO_ODSR |= PIO_ODSR_P24;
-      }
-      else{
-        PIOC->PIO_ODSR &= ~PIO_ODSR_P24;
-      } 
-
-      //Shift Register 7.
-      if (temp[7] == 0x01){
         PIOC->PIO_ODSR |= PIO_ODSR_P23;
       }
       else{
         PIOC->PIO_ODSR &= ~PIO_ODSR_P23;
       }
+
+      //Shift Register 4.
+      if (temp[4] == 0x01){
+        PIOC->PIO_ODSR |= PIO_ODSR_P25;
+      }
+      else{
+        PIOC->PIO_ODSR &= ~PIO_ODSR_P25;
+      }   
+
+      //Shift Register 5.
+      if (temp[5] == 0x01){
+        PIOC->PIO_ODSR |= PIO_ODSR_P28;
+      }
+      else{
+        PIOC->PIO_ODSR &= ~PIO_ODSR_P28;
+      } 
+
+      //Shift Register 6.
+      if (temp[6] == 0x01){
+        PIOA->PIO_ODSR |= PIO_ODSR_P9;
+      }
+      else{
+        PIOA->PIO_ODSR &= ~PIO_ODSR_P9;
+      } 
+
+      //Shift Register 7.
+      //if (temp[7] == 0x01){
+      //  PIOC->PIO_ODSR |= PIO_ODSR_P23;
+      //}
+      //else{
+      //  PIOC->PIO_ODSR &= ~PIO_ODSR_P23;
+      //}
     }
   }
   else{
-    PIOC->PIO_ODSR |= PIO_ODSR_P22;
+    PIOC->PIO_ODSR |= PIO_ODSR_P13;
   }
   clockCount--;
 }
