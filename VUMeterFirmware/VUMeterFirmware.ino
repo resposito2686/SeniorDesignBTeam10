@@ -26,7 +26,7 @@ void setup(){
   /**************** ADC SETTINGS ****************/
   ADC->ADC_MR |= ADC_MR_FREERUN | ADC_MR_LOWRES;
   ADC->ADC_CR = ADC_CR_START;
-  ADC->ADC_CHER = ADC_CHER_CH7 | ADC_CHER_CH6 | ADC_CHER_CH5 | ADC_CHER_CH4 | ADC_CHER_CH3 | ADC_CHER_CH2 | ADC_CHER_CH1 | ADC_CHER_CH0;
+  ADC->ADC_CHER = ADC_CHER_CH7 | ADC_CHER_CH6 | ADC_CHER_CH5 | ADC_CHER_CH4 | ADC_CHER_CH3 | ADC_CHER_CH2 | ADC_CHER_CH1;
 
   /**************** OUTPUT PIN SETTINGS ****************/
   //PB21 (Pin 52) = CLOCK.
@@ -62,6 +62,7 @@ void setup(){
   PIOC->PIO_OWER |= PIO_OWER_P28;
   
   //PA9 (Pin 1) = Shift Register 6.
+  PIOA->PIO_PER |= PIO_PER_P9;
   PIOA->PIO_OER |= PIO_OER_P9;
   PIOA->PIO_OWER |= PIO_OWER_P9;
   
@@ -89,20 +90,20 @@ void loop(){
   /**************** SAMPLE ADC ****************/
   if (dataCount < 0){
     dataCount = 7;
-    a[0]=78;   // a[0] (analog pin 0) = sub bass filter.
-    a[1]=153;   // a[1] (analog pin 1) = bass filter.
-    a[2]=216;   // a[2] (analog pin 2) = lower midrange filter.
-    a[3]=305;   // a[3] (analog pin 3) = midrange filter.
-    a[4]=431;   // a[4] (analog pin 4) = upper midrange filter.
-    a[5]=609;   // a[5] (analog pin 5) = presence filter.
-    a[6]=860;   // a[6] (analog pin 6) = brilliance filter.
-    //a[0]=ADC->ADC_CDR[7];   // a[0] (analog pin 0) = sub bass filter.
-    //a[1]=ADC->ADC_CDR[6];   // a[1] (analog pin 1) = bass filter.
-    //a[2]=ADC->ADC_CDR[5];   // a[2] (analog pin 2) = lower midrange filter.
-    //a[3]=ADC->ADC_CDR[4];   // a[3] (analog pin 3) = midrange filter.
-    //a[4]=ADC->ADC_CDR[3];   // a[4] (analog pin 4) = upper midrange filter.
-    //a[5]=ADC->ADC_CDR[2];   // a[5] (analog pin 5) = presence filter.
-    //a[6]=ADC->ADC_CDR[1];   // a[6] (analog pin 6) = brilliance filter.
+    //a[0]=78;   // a[0] (analog pin 0) = sub bass filter.
+    //a[1]=153;   // a[1] (analog pin 1) = bass filter.
+    //a[2]=216;   // a[2] (analog pin 2) = lower midrange filter.
+    //a[3]=305;   // a[3] (analog pin 3) = midrange filter.
+    //a[4]=431;   // a[4] (analog pin 4) = upper midrange filter.
+    //a[5]=609;   // a[5] (analog pin 5) = presence filter.
+    //a[6]=860;   // a[6] (analog pin 6) = brilliance filter.
+    a[0]=ADC->ADC_CDR[7];   // a[0] (analog pin 0) = sub bass filter.
+    a[1]=ADC->ADC_CDR[6];   // a[1] (analog pin 1) = bass filter.
+    a[2]=ADC->ADC_CDR[5];   // a[2] (analog pin 2) = lower midrange filter.
+    a[3]=ADC->ADC_CDR[4];   // a[3] (analog pin 3) = midrange filter.
+    a[4]=ADC->ADC_CDR[3];   // a[4] (analog pin 4) = upper midrange filter.
+    a[5]=ADC->ADC_CDR[2];   // a[5] (analog pin 5) = presence filter.
+    a[6]=ADC->ADC_CDR[1];   // a[6] (analog pin 6) = brilliance filter.
     a[7]=0;                 // a[7]  NOT USED.
     
     for(int i = 0; i < 8; i++){
@@ -133,7 +134,8 @@ void loop(){
       else{
         n=8;                             //8 LEDs.
       }
-      data[i] = 0xFF >> 8 - n;
+      //data[i] = 0xFF >> 8 - n;
+      data[i] = 0xFF << 8 - n;
     }
   }
 }
