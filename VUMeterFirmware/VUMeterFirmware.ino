@@ -9,7 +9,7 @@
  * 
  * DESCRIPTION :
  *     This program will read from the Arduino Due's ADC and then 
- *     bit bang the results to shift registers.
+ *     bit bang the results to 7 shift registers.
  * 
  * LAST MODIFIED : 10/15/2021
  * 
@@ -19,8 +19,8 @@ volatile int clockCount = 17;
 volatile int dataCount = 7;
 int a[8];
 uint8_t n = 0;
-uint8_t data[8] = {0,0,0,0,0,0,0,0};
-uint8_t temp[8];
+uint8_t data[7] = {0,0,0,0,0,0,0};
+uint8_t temp[7];
 
 void setup(){
   /**************** ADC SETTINGS ****************/
@@ -65,10 +65,6 @@ void setup(){
   PIOA->PIO_PER |= PIO_PER_P9;
   PIOA->PIO_OER |= PIO_OER_P9;
   PIOA->PIO_OWER |= PIO_OWER_P9;
-  
-  //PC23 (Pin 7) = Shift Register 7.
-  //PIOC->PIO_OER |= PIO_OER_P23;
-  //PIOC->PIO_OWER |= PIO_OWER_P23;
 
   /**************** TIMER AND INTERRUPT SETTINGS ****************/
   PMC->PMC_PCR = PMC_PCR_EN | PMC_PCR_CMD | (ID_TC0 & 0x7F);
@@ -104,9 +100,8 @@ void loop(){
     a[4]=ADC->ADC_CDR[3];   // a[4] (analog pin 4) = upper midrange filter.
     a[5]=ADC->ADC_CDR[2];   // a[5] (analog pin 5) = presence filter.
     a[6]=ADC->ADC_CDR[1];   // a[6] (analog pin 6) = brilliance filter.
-    a[7]=0;                 // a[7]  NOT USED.
     
-    for(int i = 0; i < 8; i++){
+    for(int i = 0; i < 7; i++){
       if(a[i] < 77) {
         n=0;                             //0 LEDs.
       }
@@ -134,7 +129,6 @@ void loop(){
       else{
         n=8;                             //8 LEDs.
       }
-      //data[i] = 0xFF >> 8 - n;
       data[i] = 0xFF << 8 - n;
     }
   }
@@ -150,7 +144,7 @@ void TC0_Handler(){
     PIOC->PIO_ODSR &= ~PIO_ODSR_P13;
     
     if ((clockCount & 0x01) != 0){
-      for (int i = 0; i < 8; i++){
+      for (int i = 0; i < 7; i++){
         temp[i] = data[i] & (0x01 << dataCount);
         temp[i] >>= dataCount;
       }
@@ -211,14 +205,6 @@ void TC0_Handler(){
       else{
         PIOA->PIO_ODSR &= ~PIO_ODSR_P9;
       } 
-
-      //Shift Register 7.
-      //if (temp[7] == 0x01){
-      //  PIOC->PIO_ODSR |= PIO_ODSR_P23;
-      //}
-      //else{
-      //  PIOC->PIO_ODSR &= ~PIO_ODSR_P23;
-      //}
     }
   }
   else{
