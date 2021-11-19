@@ -29,13 +29,13 @@ void setup(){
   ADC->ADC_CHER = ADC_CHER_CH7 | ADC_CHER_CH6 | ADC_CHER_CH5 | ADC_CHER_CH4 | ADC_CHER_CH3 | ADC_CHER_CH2 | ADC_CHER_CH1;
 
   /**************** OUTPUT PIN SETTINGS ****************/
-  //PB21 (Pin 52) = CLOCK.
-  PIOB->PIO_OER |= PIO_OER_P21;
-  PIOB->PIO_OWER |= PIO_OWER_P21;
+  //PD0 (Pin 25) = CLOCK.
+  PIOD->PIO_OER |= PIO_OER_P0;
+  PIOD->PIO_OWER |= PIO_OWER_P0;
   
-  //PC13 (Pin 50) = LATCH.
-  PIOC->PIO_OER |= PIO_OER_P13;
-  PIOC->PIO_OWER |= PIO_OWER_P13;
+  //PA14 (Pin 23) = LATCH.
+  PIOA->PIO_OER |= PIO_OER_P14;
+  PIOA->PIO_OWER |= PIO_OWER_P14;
 
   //PB27 (Pin 13) = Shift Register 0.
   PIOB->PIO_OER |= PIO_OER_P27;
@@ -75,7 +75,7 @@ void setup(){
   TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 
   /**************** CLOCK START ****************/
-  PIOB->PIO_ODSR |= PIO_ODSR_P21;
+  PIOD->PIO_ODSR |= PIO_ODSR_P0;
 }
 
 void loop(){
@@ -138,10 +138,10 @@ void loop(){
 void TC0_Handler(){
 
   TC0->TC_CHANNEL[0].TC_SR;
-  PIOB->PIO_ODSR ^= PIO_ODSR_P21;
+  PIOD->PIO_ODSR ^= PIO_ODSR_P0;
   
   if (clockCount > 2){
-    PIOC->PIO_ODSR &= ~PIO_ODSR_P13;
+    PIOA->PIO_ODSR &= ~PIO_ODSR_P14;
     
     if ((clockCount & 0x01) != 0){
       for (int i = 0; i < 7; i++){
@@ -208,7 +208,7 @@ void TC0_Handler(){
     }
   }
   else{
-    PIOC->PIO_ODSR |= PIO_ODSR_P13;
+    PIOA->PIO_ODSR |= PIO_ODSR_P14;
   }
   clockCount--;
 }
